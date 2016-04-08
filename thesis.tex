@@ -1,0 +1,170 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% COMPILING %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% This bit allows you to either specify only the files which you wish to
+%% process, or `all' to process all files which you \include.
+%% Krishna Sethuraman (1990).
+% \typein [\files]{Enter file names to process, (chap1,chap2 ...), or `all' to
+% process all files:}
+% \def\all{all}
+% \ifx\files\all \typeout{Including all files.} \else \typeout{Including only \files.} \includeonly{\files} \fi
+%
+% make only compiles the pdf, make full compiles the pdf with bibtex
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PREAMLE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \documentclass[12pt,twoside,leftblank]{ifathesis}
+%%
+%% If you want blank pages before new chapters to be labelled ``This
+%% Page Intentionally Left Blank'', use the ``leftblank'' option, as
+%% above.
+
+\documentclass[12pt,twoside]{ifathesis}
+
+\usepackage[bitstream-charter]{mathdesign} % Use BT Charter font
+\usepackage[T1]{fontenc}                   % Use T1 encoding instead of OT1
+\usepackage[utf8]{inputenc}                % Use UTF8 input encoding
+\usepackage{microtype}                     % Improve typography
+\usepackage{amsmath,bm}                       % AMS Math extensions
+\usepackage{booktabs}                      % Improve table spacing
+\usepackage{graphicx}                      % Extended graphics capabilities
+\usepackage{tocbibind}                     % Include listings in TOC
+
+\usepackage{listings}                      % Source code listings
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{color}
+\usepackage{url}
+\usepackage{array}
+\usepackage{pdfpages}
+\usepackage{pgfplots}
+
+
+\usepackage{tikz}
+\usepackage{siunitx}
+\usepackage[round]{natbib}
+%\setcitestyle{authoryear,open={((},close={))}}
+\usepackage{etoolbox} % Does so that only the year is linked and colored, not the authors.
+\makeatletter
+
+% Patch case where name and year are separated by aysep
+\patchcmd{\NAT@citex}
+  {\@citea\NAT@hyper@{%
+     \NAT@nmfmt{\NAT@nm}%
+     \hyper@natlinkbreak{\NAT@aysep\NAT@spacechar}{\@citeb\@extra@b@citeb}%
+     \NAT@date}}
+  {\@citea\NAT@nmfmt{\NAT@nm}%
+   \NAT@aysep\NAT@spacechar\NAT@hyper@{\NAT@date}}{}{}
+
+% Patch case where name and year are separated by opening bracket
+\patchcmd{\NAT@citex}
+  {\@citea\NAT@hyper@{%
+     \NAT@nmfmt{\NAT@nm}%
+     \hyper@natlinkbreak{\NAT@spacechar\NAT@@open\if*#1*\else#1\NAT@spacechar\fi}%
+       {\@citeb\@extra@b@citeb}%
+     \NAT@date}}
+  {\@citea\NAT@nmfmt{\NAT@nm}%
+   \NAT@spacechar\NAT@@open\if*#1*\else#1\NAT@spacechar\fi\NAT@hyper@{\NAT@date}}
+  {}{}
+
+\makeatother
+
+% Remember to change this section !!!
+\usepackage[breaklinks=true,colorlinks,citecolor=black]{hyperref}
+\hypersetup{colorlinks=true, linkcolor=black, citecolor=cyan, urlcolor=blue,
+  pdftitle={An Optimizing Compiler for Low-Level Floating Point Operations},
+  pdfauthor={Lucien William Van Elsen}
+}
+\pagestyle{plain}
+
+% Problem with package
+%\usepackage{floatrow}
+%\floatsetup[table]{style=plaintop}
+%\floatsetup[widefigure]{margins=hangleft}
+
+% Algorithm constructs
+\usepackage[chapter]{algorithm} % Provides algorithm environment
+\usepackage{algorithmicx}       % Provides algorithmic block
+\usepackage{algpseudocode}      % Option of algorithmicx package
+\renewcommand{\thealgorithm}{\thechapter-\arabic{algorithm}}
+
+% Configure captions
+\captionsetup{labelfont=bf, labelsep=colon}
+\captionsetup[algorithm]{labelfont=bf, labelsep=colon}
+
+% Use Latin Modern for typewriter fonts
+\renewcommand{\ttdefault}{lmtt}
+
+% Add \unit macro
+\newcommand{\unit}[1]{\ensuremath{\, \mathrm{#1}}}
+
+% Write in color
+\newcommand{\Red}[1]{\textcolor{red}{#1}}
+\newcommand{\Blue}[1]{\textcolor{blue}{#1}}
+
+%running fraction with slash - requires math mode.
+\newcommand*\rfrac[2]{{}^{#1}\!/_{#2}}
+
+\definecolor{gray}{rgb}{0.4,0.4,0.4}
+\definecolor{darkblue}{rgb}{0.0,0.0,0.6}
+\definecolor{cyan}{rgb}{0.0,0.6,0.6}
+\lstset{
+  basicstyle=\footnotesize\ttfamily,
+  columns=fullflexible,
+  showstringspaces=false,
+  commentstyle=\color{gray}\upshape,
+  frame=single,
+  xleftmargin=0.55in
+}
+
+\lstdefinelanguage{XML}
+{
+  morestring=[b]",
+  morestring=[s]{>}{<},
+  morecomment=[s]{<?}{?>},
+  morecomment=[s]{<!--}{-->},
+  stringstyle=\color{black},
+  identifierstyle=\color{darkblue},
+  keywordstyle=\color{cyan},
+  morekeywords={}
+}
+
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{3}
+
+\graphicspath{{figures/ch4/}}
+\renewcommand{\contentsname}{Table of Contents}
+\renewcommand{\bibname}{References}
+
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%% COVER & ACKNOWLEDGMENT & CONTENT %%%%%%%%%%%%%%%%%%%%%%%
+\pagenumbering{roman}
+\include{cover}
+\include{acknowledgments}
+
+% Some departments (e.g. 5) require an additional signature page.  See
+% signature.tex for more information and uncomment the following line if
+% applicable.
+% \include{signature}
+\pagestyle{plain}
+\include{contents}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CHAPTERS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage 
+\pagenumbering{arabic} % restart page numbers at one, now in arabic style
+\include{chap1}
+% \include{chap2}
+% ...
+\clearpage
+\pagenumbering{arabic} % restart page numbers at one, now in arabic style
+\appendix
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% BIBLIOGRAPHY %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{singlespace}
+\bibliographystyle{plainnat}
+\bibliography{references}
+\end{singlespace}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
